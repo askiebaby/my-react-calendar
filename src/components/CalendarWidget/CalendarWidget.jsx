@@ -4,7 +4,7 @@ import CalendarBody from './CalendarBody';
 
 import './CalendarWidget.scss';
 
-const CalendarWidget = ({ userInputDate = '', onSelect = () => {} }) => {
+const CalendarWidget = ({ userInputDate = '', onSelectDate = () => {} }) => {
   const today = {
     year: new Date().getFullYear(),
     month: new Date().getMonth(),
@@ -54,8 +54,12 @@ const CalendarWidget = ({ userInputDate = '', onSelect = () => {} }) => {
 
     setupDay(todayDate);
 
-    onSelect({ selectedDate });
-  }, [calendar, selectedDate, onSelect, setupDay]);
+    onSelectDate({
+      year: date.getFullYear(),
+      month: date.getMonth(),
+      date: date.getDate(),
+    });
+  }, [calendar, onSelectDate, setupDay]);
 
   useEffect(() => {
     if (typeof userInputDate === 'string' && userInputDate) {
@@ -161,9 +165,7 @@ const CalendarWidget = ({ userInputDate = '', onSelect = () => {} }) => {
 
     setSelectedDate(userSelectedDate);
 
-    onSelect({
-      selectedDate: userSelectedDate,
-    });
+    onSelectDate(userSelectedDate);
   };
 
   return (
