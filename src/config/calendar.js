@@ -1,4 +1,4 @@
-export const calendar = {
+export const calendarInternational = {
   weekdays: {
     en: [
       'Sunday',
