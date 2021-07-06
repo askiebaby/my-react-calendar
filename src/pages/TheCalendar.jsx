@@ -1,5 +1,7 @@
+import CalendarWidget from '../components/CalendarWidget';
+
 const TheCalendar = () => {
-  return <div>TheCalendar</div>;
+  return <CalendarWidget />;
 };
 
 export default TheCalendar;

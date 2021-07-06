@@ -1,0 +1,205 @@
+.calendar {
+  position: relative;
+  width: 280px;
+  margin: auto;
+  border: 1px solid #cccccc;
+  padding: 35px 10px;
+  border-radius: 3px;
+  text-align: center;
+  background-color: #ffffff;
+
+  button {
+    // original /deep/ from vue
+    cursor: pointer;
+    background-color: transparent;
+
+    &:hover {
+      background-color: #eeeeee;
+    }
+
+    &:active {
+      &::before,
+      &::after {
+        background-color: #000000;
+      }
+    }
+
+    &:focus {
+      border: 1px dashed #db3d4450;
+      outline: 0;
+    }
+  }
+
+  .show-today-button {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+  }
+
+  &__nav {
+    // arrow settings
+    $arrow-top: 16px;
+    $arrow-bottom: 22px;
+    $arrow-margin-with-content: 16px;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 5px;
+
+    &__month-year {
+      flex-basis: 70%;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 8px 0px;
+      border: 0;
+      border-radius: 3px;
+    }
+
+    &__month-controller {
+      > button {
+        display: block;
+        position: relative;
+        border: 1px solid #ffffff;
+        border-radius: 50%;
+        padding: 0;
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    &__prev,
+    &__next {
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        width: 10px;
+        height: 2px;
+        background-color: #666666;
+      }
+
+      &::before {
+        transform: rotate(45deg);
+      }
+
+      &::after {
+        transform: rotate(-45deg);
+      }
+    }
+
+    &__prev {
+      &::before,
+      &::after {
+        right: $arrow-margin-with-content;
+      }
+
+      &::before {
+        top: $arrow-bottom;
+      }
+
+      &::after {
+        top: $arrow-top;
+      }
+    }
+    &__next {
+      &::before,
+      &::after {
+        left: $arrow-margin-with-content;
+      }
+
+      &::before {
+        top: $arrow-top;
+      }
+      &::after {
+        top: $arrow-bottom;
+      }
+    }
+  }
+
+  &__weekdays {
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+  }
+
+  &__weekday {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 25px;
+    height: 25px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  &__day {
+    display: inline-block;
+    font-size: 0.875rem;
+    width: calc(100% / 7);
+    height: 35px;
+    border: 0;
+    border-radius: 50%;
+    padding: 0;
+    border: 0;
+
+    // 非當月日期顏色
+    color: #cccccc;
+  }
+
+  &__this-month {
+    // 當月日期基底顏色
+    color: #000000;
+  }
+
+  &__today {
+    // 日期當日顏色
+    color: #db3d44;
+  }
+
+  // 月份、年份模式
+  &__months,
+  &__years {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+  }
+
+  &__month,
+  &__year {
+    width: 25%;
+    margin-bottom: 10px;
+
+    > button {
+      width: 50px;
+      height: 50px;
+      border: 0;
+      border-radius: 50%;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+  }
+
+  &__year {
+    &:first-child,
+    &:last-child {
+      button {
+        color: #cccccc;
+      }
+    }
+  }
+
+  .calendar__day--selected,
+  .calendar__month--selected > button,
+  .calendar__year--selected > button {
+    // 選中日期後覆蓋的樣式
+    background-color: #db3d44;
+    color: #ffffff;
+
+    &:hover {
+      background-color: #db3d44;
+      color: #ffffff;
+    }
+  }
+}
