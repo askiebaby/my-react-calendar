@@ -1,24 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from 'react-router-dom';
+
+import AppNavigation from './components/AppNavigation';
+import TheCalendar from './pages/TheCalendar';
+import DatePicker from './pages/DatePicker';
+
+import './app.scss';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.StrictMode>
+      <Router>
+        <AppNavigation />
+        <Switch>
+          <Route
+            exact
+            path='/calendar'
+            key='calendar'
+            render={() => <TheCalendar />}
+          />
+          <Route
+            exact
+            path='/date-picker'
+            key='date-picker'
+            render={() => <DatePicker />}
+          />
+
+          <Redirect
+            to={{
+              pathname: '/calendar',
+            }}
+          />
+        </Switch>
+      </Router>
+    </React.StrictMode>
   );
 }
 
