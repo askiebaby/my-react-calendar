@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import CalendarWidget from '../components/CalendarWidget';
-import DatePickerInput from '../components/DatePickerInput';
+import React, { useState, useEffect, useCallback } from 'react';
+import CalendarWidget from '../../components/CalendarWidget';
+import DatePickerInput from '../../components/DatePickerInput';
 
-import './DatePicker.scss';
+import './DatePickerPage.scss';
 
-const DatePicker = () => {
+const DatePickerPage = () => {
   const [isShowCalendar, setIsShowCalendar] = useState(true);
   const [selectedDate, setSelectedDate] = useState({});
   const [selectedDateFormat, setSelectedDateFormat] = useState('2021-04-08');
 
-  const toggleCalendar = () => {
+  const handleToggleCalendar = useCallback(() => {
     setIsShowCalendar(!isShowCalendar);
-  };
+  }, [isShowCalendar]);
 
-  const handleSelectDate = (date) => {
+  const handleSelectDate = useCallback((date) => {
     setSelectedDate(date);
     setIsShowCalendar(false);
-  };
+  }, []);
 
   useEffect(() => {
     const format = Object.keys(selectedDate).length
@@ -29,9 +29,12 @@ const DatePicker = () => {
     <section className='datepicker'>
       <DatePickerInput
         selectedDateFormat={selectedDateFormat}
-        onClick={toggleCalendar}>
+        onClick={handleToggleCalendar}>
         <div style={{ display: isShowCalendar ? 'block' : 'none' }}>
-          <div className='datepicker__close-layer' onClick={toggleCalendar} />
+          <div
+            className='datepicker__close-layer'
+            onClick={handleToggleCalendar}
+          />
           <CalendarWidget date='2019-12-01' onSelectDate={handleSelectDate} />
         </div>
       </DatePickerInput>
@@ -39,4 +42,4 @@ const DatePicker = () => {
   );
 };
 
-export default DatePicker;
+export default DatePickerPage;

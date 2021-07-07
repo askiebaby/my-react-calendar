@@ -7,8 +7,8 @@ import {
 } from 'react-router-dom';
 
 import AppNavigation from './components/AppNavigation';
-import TheCalendar from './pages/TheCalendar';
-import DatePicker from './pages/DatePicker';
+import CalendarPage from './pages/CalendarPage';
+import DatePickerPage from './pages/DatePickerPage';
 
 import './app.scss';
 
@@ -22,13 +22,13 @@ function App() {
             exact
             path='/calendar'
             key='calendar'
-            render={() => <TheCalendar />}
+            render={() => <CalendarPage />}
           />
           <Route
             exact
             path='/date-picker'
             key='date-picker'
-            render={() => <DatePicker />}
+            render={() => <DatePickerPage />}
           />
 
           <Redirect
