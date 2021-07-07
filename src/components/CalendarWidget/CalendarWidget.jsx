@@ -22,38 +22,30 @@ const CalendarWidget = ({ userInputDate = '', onSelectDate = () => {} }) => {
 
   const [selectedDate, setSelectedDate] = useState({});
 
-  const setupDay = useCallback(
-    (initDate) => {
-      const [yyyy, mm, dd] = initDate.split('-');
-      const year = Number(yyyy);
-      const month = Number(mm - 1);
-      const date = Number(dd);
+  const setupDay = useCallback((initDate) => {
+    const [yyyy, mm, dd] = initDate.split('-');
+    const year = Number(yyyy);
+    const month = Number(mm - 1);
+    const date = Number(dd);
 
-      setSelectedDate({
-        year,
-        month,
-        date,
-      });
+    setSelectedDate({
+      year,
+      month,
+      date,
+    });
 
-      setCalendar({
-        ...calendar,
-        year,
-        month,
-      });
-    },
-    [calendar]
-  );
+    setCalendar({
+      mode: 'day',
+      year,
+      month,
+    });
+  }, []);
 
   const setupToday = useCallback(() => {
     const date = new Date();
     const todayDate = `${date.getFullYear()}-${
       date.getMonth() + 1
     }-${date.getDate()}`;
-
-    setCalendar({
-      ...calendar,
-      mode: 'day',
-    });
 
     setupDay(todayDate);
 
@@ -62,7 +54,7 @@ const CalendarWidget = ({ userInputDate = '', onSelectDate = () => {} }) => {
       month: date.getMonth(),
       date: date.getDate(),
     });
-  }, [calendar, onSelectDate, setupDay]);
+  }, [onSelectDate, setupDay]);
 
   useEffect(() => {
     if (typeof userInputDate === 'string' && userInputDate) {
