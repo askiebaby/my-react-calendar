@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import cx from 'classnames';
 import { calendarInternational } from '../../config/calendar';
 const { months, weekdays } = calendarInternational;
@@ -13,8 +13,8 @@ const CalendarBody = ({
 }) => {
   const [calendarFirstYear, setCalendarFirstYear] = useState(0);
   const [monthFirstDay, setMonthFirstDay] = useState(0);
-  const [calendarFirstDay, setCalendarFirstDay] = useState({});
-  const [calendarDays, setCalendarDays] = useState([]);
+  const [calendarFirstDate, setCalendarFirstDates] = useState({});
+  const [calendarDates, setCalendarDates] = useState([]);
 
   useEffect(() => {
     setCalendarFirstYear(Math.floor(calendar.year / 10) * 10 - 1);
@@ -28,7 +28,7 @@ const CalendarBody = ({
     // 推算日曆第一格
     const date = new Date(calendar.year, calendar.month, 1 - monthFirstDay);
 
-    setCalendarFirstDay({
+    setCalendarFirstDates({
       year: date.getFullYear(),
       month: date.getMonth(),
       date: date.getDate(),
@@ -42,25 +42,28 @@ const CalendarBody = ({
 
     for (let date = 0; date < 42; date++) {
       const everyday = new Date(
-        calendarFirstDay.year,
-        calendarFirstDay.month,
-        calendarFirstDay.date + date
+        calendarFirstDate.year,
+        calendarFirstDate.month,
+        calendarFirstDate.date + date
       );
 
       monthDays.push(everyday);
     }
 
-    setCalendarDays(monthDays);
-  }, [calendarFirstDay]);
+    setCalendarDates(monthDays);
+  }, [calendarFirstDate]);
 
   // 確認是否為當日的日期
-  const checkIsToday = (date) => {
-    return (
-      date.getFullYear() === today.year &&
-      date.getMonth() === today.month &&
-      date.getDate() === today.date
-    );
-  };
+  const checkIsToday = useCallback(
+    (date) => {
+      return (
+        date.getFullYear() === today.year &&
+        date.getMonth() === today.month &&
+        date.getDate() === today.date
+      );
+    },
+    [today]
+  );
 
   // 確認是否為當月的日期
   const checkDayIsInMonth = (date) => {
@@ -92,13 +95,12 @@ const CalendarBody = ({
 
   /**
    * 選擇日期
-   * @param week 是週的順序，起始值是 1，最大是 6
-   * @param day 是日的順序，起始值是 1，最大是 7
+   * @param date 是所選的日期物件
    */
-  const handleSelectDate = (day) => {
+  const handleSelectDate = (date) => {
     onSelectDate({
-      date: day,
-      isInMonth: checkDayIsInMonth(day),
+      date,
+      isInMonth: checkDayIsInMonth(date),
     });
   };
 
@@ -116,17 +118,17 @@ const CalendarBody = ({
           </div>
 
           {/* days */}
-          {calendarDays.map((day, dayIndex) => (
+          {calendarDates.map((date, dateIndex) => (
             <button
-              key={dayIndex}
-              data-date={day}
+              key={dateIndex}
+              data-date={date}
               className={cx('calendar__day', {
-                calendar__today: checkIsToday(day),
-                'calendar__this-month': checkDayIsInMonth(day),
-                'calendar__day--selected': checkIsSelected(day),
+                calendar__today: checkIsToday(date),
+                'calendar__this-month': checkDayIsInMonth(date),
+                'calendar__day--selected': checkIsSelected(date),
               })}
-              onClick={() => handleSelectDate(day)}>
-              {day.getDate()}
+              onClick={() => handleSelectDate(date)}>
+              {date.getDate()}
             </button>
           ))}
         </section>

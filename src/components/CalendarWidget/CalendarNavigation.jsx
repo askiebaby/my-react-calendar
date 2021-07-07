@@ -4,8 +4,8 @@ const { months } = calendarInternational;
 
 const CalendarNavigation = ({
   calendar = {},
-  onChangeMonth,
-  onChangeYear,
+  onChangeNavigationMonth,
+  onChangeNavigationYear,
   onChangeViewMode,
 }) => {
   const [navigationDisplay, setNavigationDisplay] = useState('');
@@ -36,26 +36,26 @@ const CalendarNavigation = ({
     setNavigationDisplay(display);
   }, [calendar.mode, calendar.year, calendar.month]);
 
-  const handleChangeNavigation = useCallback(
+  const handleClickNavigation = useCallback(
     (viewMode = 'day', action = 'next') => {
       const operator = action === 'next' ? 1 : -1;
 
       switch (viewMode) {
         case 'day':
-          onChangeMonth(operator * 1);
+          onChangeNavigationMonth(operator * 1);
           break;
 
         case 'month':
-          onChangeYear(operator * 1);
+          onChangeNavigationYear(operator * 1);
           break;
 
         case 'year':
         default:
-          onChangeYear(operator * 10);
+          onChangeNavigationYear(operator * 10);
           break;
       }
     },
-    [onChangeMonth, onChangeYear]
+    [onChangeNavigationMonth, onChangeNavigationYear]
   );
 
   return (
@@ -64,9 +64,7 @@ const CalendarNavigation = ({
       <div className='calendar__nav__month-controller'>
         <button
           className='calendar__nav__prev'
-          onClick={() =>
-            handleChangeNavigation(calendar.mode, 'prev')
-          }></button>
+          onClick={() => handleClickNavigation(calendar.mode, 'prev')}></button>
       </div>
       {/* 顯示目前年月，或是選擇後的年月 */}
       <button
@@ -78,9 +76,7 @@ const CalendarNavigation = ({
       <div className='calendar__nav__month-controller'>
         <button
           className='calendar__nav__next'
-          onClick={() =>
-            handleChangeNavigation(calendar.mode, 'next')
-          }></button>
+          onClick={() => handleClickNavigation(calendar.mode, 'next')}></button>
       </div>
     </nav>
   );

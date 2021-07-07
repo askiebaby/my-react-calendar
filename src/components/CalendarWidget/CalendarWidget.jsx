@@ -1,15 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import CalendarNavigation from './CalendarNavigation';
 import CalendarBody from './CalendarBody';
 
 import './CalendarWidget.scss';
 
 const CalendarWidget = ({ userInputDate = '', onSelectDate = () => {} }) => {
-  const today = {
-    year: new Date().getFullYear(),
-    month: new Date().getMonth(),
-    date: new Date().getDate(),
-  };
+  const today = useMemo(
+    () => ({
+      year: new Date().getFullYear(),
+      month: new Date().getMonth(),
+      date: new Date().getDate(),
+    }),
+    []
+  );
 
   const [calendar, setCalendar] = useState({
     mode: 'day',
@@ -99,7 +102,7 @@ const CalendarWidget = ({ userInputDate = '', onSelectDate = () => {} }) => {
    * 切換西元年
    * @param yearNum 上一年、下一年
    */
-  const handleChangeYear = (yearNum) => {
+  const handleChangeNavigationYear = (yearNum) => {
     const date = new Date(`${calendar.year}-${calendar.month + 1}`);
 
     date.setFullYear(date.getFullYear() + yearNum);
@@ -113,7 +116,7 @@ const CalendarWidget = ({ userInputDate = '', onSelectDate = () => {} }) => {
    * 切換月份
    * @param monthNum 上個月、下個月
    */
-  const handleChangeMonth = (monthNum) => {
+  const handleChangeNavigationMonth = (monthNum) => {
     const date = new Date(`${calendar.year}-${calendar.month + 1}`);
 
     date.setMonth(date.getMonth() + monthNum);
@@ -164,7 +167,6 @@ const CalendarWidget = ({ userInputDate = '', onSelectDate = () => {} }) => {
     };
 
     setSelectedDate(userSelectedDate);
-
     onSelectDate(userSelectedDate);
   };
 
@@ -175,8 +177,8 @@ const CalendarWidget = ({ userInputDate = '', onSelectDate = () => {} }) => {
       </button>
       <CalendarNavigation
         calendar={calendar}
-        onChangeMonth={handleChangeMonth}
-        onChangeYear={handleChangeYear}
+        onChangeNavigationMonth={handleChangeNavigationMonth}
+        onChangeNavigationYear={handleChangeNavigationYear}
         onChangeViewMode={handleChangeViewMode}
       />
       <CalendarBody
