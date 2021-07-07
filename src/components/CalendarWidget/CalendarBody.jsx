@@ -38,6 +38,10 @@ const CalendarBody = ({
 
   useEffect(() => {
     // 計算應該是幾天
+    if (!Object.keys(calendarFirstDate).length) {
+      return;
+    }
+
     const monthDays = [];
 
     for (let date = 0; date < 42; date++) {
