@@ -15,7 +15,7 @@ import './app.scss';
 function App() {
   return (
     <React.StrictMode>
-      <Router>
+      <Router basename='my-react-calendar'>
         <AppNavigation />
         <Switch>
           <Route
