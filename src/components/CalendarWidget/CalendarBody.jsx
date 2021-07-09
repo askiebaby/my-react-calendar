@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import cx from 'classnames';
 import { calendarInternational } from '../../config/calendar';
 const { months, weekdays } = calendarInternational;
@@ -11,32 +11,39 @@ const CalendarBody = ({
   onChangeCalendarMonth,
   onChangeCalendarYear,
 }) => {
-  const [calendarFirstYear, setCalendarFirstYear] = useState(0);
-  const [monthFirstDay, setMonthFirstDay] = useState(0);
-  const [calendarFirstDate, setCalendarFirstDates] = useState({});
-  const [calendarDates, setCalendarDates] = useState([]);
+  const getCalendarFirstYear = useCallback((year) => {
+    return Math.floor(year / 10) * 10 - 1;
+  }, []);
 
-  useEffect(() => {
-    setCalendarFirstYear(Math.floor(calendar.year / 10) * 10 - 1);
-  }, [calendar.year]);
+  const calendarFirstYear = useMemo(() => {
+    return getCalendarFirstYear(calendar.year);
+  }, [calendar.year, getCalendarFirstYear]);
 
-  useEffect(() => {
-    setMonthFirstDay(new Date(calendar.year, calendar.month, 1).getDay());
-  }, [calendar.year, calendar.month]);
+  const getMonthFirstDay = useCallback((year, month) => {
+    return new Date(year, month, 1).getDay();
+  }, []);
 
-  useEffect(() => {
+  const monthFirstDay = useMemo(() => {
+    return getMonthFirstDay(calendar.year, calendar.month);
+  }, [calendar.year, calendar.month, getMonthFirstDay]);
+
+  const getCalendarFirstDate = useCallback((year, month, firstDay) => {
     // 推算日曆第一格
-    const date = new Date(calendar.year, calendar.month, 1 - monthFirstDay);
+    const date = new Date(year, month, 1 - firstDay);
 
-    setCalendarFirstDates({
+    return {
       year: date.getFullYear(),
       month: date.getMonth(),
       date: date.getDate(),
       day: date.getDay(),
-    });
-  }, [monthFirstDay, calendar.year, calendar.month]);
+    };
+  }, []);
 
-  useEffect(() => {
+  const calendarFirstDate = useMemo(() => {
+    return getCalendarFirstDate(calendar.year, calendar.month, monthFirstDay);
+  }, [monthFirstDay, calendar.year, calendar.month, getCalendarFirstDate]);
+
+  const calendarDates = useMemo(() => {
     // 計算應該是幾天
     if (!Object.keys(calendarFirstDate).length) {
       return;
@@ -54,7 +61,7 @@ const CalendarBody = ({
       monthDays.push(everyday);
     }
 
-    setCalendarDates(monthDays);
+    return monthDays;
   }, [calendarFirstDate]);
 
   // 確認是否為當日的日期

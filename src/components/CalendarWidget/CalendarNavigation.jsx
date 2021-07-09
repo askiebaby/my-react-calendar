@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { calendarInternational } from '../../config/calendar';
 const { months } = calendarInternational;
 
@@ -8,33 +8,20 @@ const CalendarNavigation = ({
   onChangeNavigationYear,
   onChangeViewMode,
 }) => {
-  const [navigationDisplay, setNavigationDisplay] = useState('');
-
-  useEffect(() => {
-    let display = '';
-
-    switch (calendar.mode) {
-      case 'day': {
-        display = `${months.en[calendar.month].slice(0, 3)} ${calendar.year}`;
-
-        break;
-      }
-
-      case 'month': {
-        display = calendar.year;
-        break;
-      }
-
-      case 'year':
-      default: {
-        const flooredYear = Math.floor(calendar.year / 10) * 10;
-        display = `${flooredYear} - ${flooredYear + 9}`;
-        break;
-      }
+  const getNavigationDisplay = useCallback((cal) => {
+    if (cal.mode === 'day') {
+      return `${months.en[cal.month].slice(0, 3)} ${cal.year}`;
+    } else if (cal.mode === 'month') {
+      return cal.year;
+    } else if (cal.mode === 'year') {
+      const flooredYear = Math.floor(cal.year / 10) * 10;
+      return `${flooredYear} - ${flooredYear + 9}`;
     }
+  }, []);
 
-    setNavigationDisplay(display);
-  }, [calendar.mode, calendar.year, calendar.month]);
+  const navigationDisplay = useMemo(() => {
+    return getNavigationDisplay(calendar);
+  }, [calendar, getNavigationDisplay]);
 
   const handleClickNavigation = useCallback(
     (viewMode = 'day', action = 'next') => {
