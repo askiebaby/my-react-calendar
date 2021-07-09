@@ -1,7 +1,7 @@
 import CalendarWidget from '../../components/CalendarWidget';
 
 const CalendarPage = () => {
-  return <CalendarWidget />;
+  return <CalendarWidget calendarOnly />;
 };
 
 export default CalendarPage;

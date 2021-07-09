@@ -1,10 +1,15 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import CalendarNavigation from './CalendarNavigation';
 import CalendarBody from './CalendarBody';
+import DatePickerInput from '../../components/DatePickerInput';
 
 import './CalendarWidget.scss';
 
-const CalendarWidget = ({ userInputDate = '', onSelectDate = () => {} }) => {
+const CalendarWidget = ({
+  userInputDate = '',
+  onSelectDate = () => {},
+  calendarOnly = false,
+}) => {
   const today = useMemo(
     () => ({
       year: new Date().getFullYear(),
@@ -56,12 +61,20 @@ const CalendarWidget = ({ userInputDate = '', onSelectDate = () => {} }) => {
     });
   }, [onSelectDate, setupDay]);
 
+  const [isShowCalendar, setIsShowCalendar] = useState(false);
+
+  const handleToggleCalendar = useCallback(() => {
+    setIsShowCalendar(!isShowCalendar);
+  }, [isShowCalendar]);
+
   useEffect(() => {
     if (typeof userInputDate === 'string' && userInputDate) {
       setupDay(userInputDate);
+      setIsShowCalendar(false);
     } else {
       // 初始化
       setupToday();
+      setIsShowCalendar(true);
     }
   }, [userInputDate]);
 
@@ -160,28 +173,41 @@ const CalendarWidget = ({ userInputDate = '', onSelectDate = () => {} }) => {
 
     setSelectedDate(userSelectedDate);
     onSelectDate(userSelectedDate);
+    if (!calendarOnly) {
+      handleToggleCalendar();
+    }
   };
 
   return (
-    <section className='calendar'>
-      <button className='show-today-button' onClick={setupToday}>
-        顯示今日
-      </button>
-      <CalendarNavigation
-        calendar={calendar}
-        onChangeNavigationMonth={handleChangeNavigationMonth}
-        onChangeNavigationYear={handleChangeNavigationYear}
-        onChangeViewMode={handleChangeViewMode}
-      />
-      <CalendarBody
-        today={today}
-        calendar={calendar}
-        selectedDate={selectedDate}
-        onSelectDate={handleSelectDate}
-        onChangeCalendarMonth={handleChangeCalendarMonth}
-        onChangeCalendarYear={handleChangeCalendarYear}
-      />
-    </section>
+    <DatePickerInput
+      selectedDateFormat={userInputDate}
+      onClick={handleToggleCalendar}
+      isShowCalendar={isShowCalendar}
+      isShowInput={!calendarOnly}>
+      {isShowCalendar ? (
+        <section
+          className='calendar'
+          style={{ display: isShowCalendar ? 'block' : 'none' }}>
+          <button className='show-today-button' onClick={setupToday}>
+            顯示今日
+          </button>
+          <CalendarNavigation
+            calendar={calendar}
+            onChangeNavigationMonth={handleChangeNavigationMonth}
+            onChangeNavigationYear={handleChangeNavigationYear}
+            onChangeViewMode={handleChangeViewMode}
+          />
+          <CalendarBody
+            today={today}
+            calendar={calendar}
+            selectedDate={selectedDate}
+            onSelectDate={handleSelectDate}
+            onChangeCalendarMonth={handleChangeCalendarMonth}
+            onChangeCalendarYear={handleChangeCalendarYear}
+          />
+        </section>
+      ) : null}
+    </DatePickerInput>
   );
 };
 
