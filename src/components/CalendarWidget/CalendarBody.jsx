@@ -7,7 +7,7 @@ const CalendarBody = ({
   today,
   calendar,
   selectedDate,
-  onSelectDate,
+  onChange,
   onChangeCalendarMonth,
   onChangeCalendarYear,
 }) => {
@@ -109,7 +109,7 @@ const CalendarBody = ({
    * @param date 是所選的日期物件
    */
   const handleSelectDate = (date) => {
-    onSelectDate({
+    onChange({
       date,
       isInMonth: checkDayIsInMonth(date),
     });

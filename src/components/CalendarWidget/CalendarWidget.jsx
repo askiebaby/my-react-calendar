@@ -7,7 +7,7 @@ import './CalendarWidget.scss';
 
 const CalendarWidget = ({
   userInputDate = '',
-  onSelectDate = () => {},
+  onChange = () => {},
   calendarOnly = false,
 }) => {
   const today = useMemo(
@@ -54,12 +54,12 @@ const CalendarWidget = ({
 
     setupDay(todayDate);
 
-    onSelectDate({
+    onChange({
       year: date.getFullYear(),
       month: date.getMonth(),
       date: date.getDate(),
     });
-  }, [onSelectDate, setupDay]);
+  }, [onChange, setupDay]);
 
   const [isShowCalendar, setIsShowCalendar] = useState(false);
 
@@ -70,7 +70,6 @@ const CalendarWidget = ({
   useEffect(() => {
     if (typeof userInputDate === 'string' && userInputDate) {
       setupDay(userInputDate);
-      setIsShowCalendar(false);
     } else {
       // 初始化
       setupToday();
@@ -78,22 +77,22 @@ const CalendarWidget = ({
     }
   }, [userInputDate]);
 
-  const handleChangeViewMode = () => {
+  const handleChangeViewMode = useCallback(() => {
     switch (calendar.mode) {
       case 'day': {
-        setCalendar({
-          ...calendar,
+        setCalendar((cal) => ({
+          ...cal,
           mode: 'month',
-        });
+        }));
 
         break;
       }
 
       case 'month': {
-        setCalendar({
-          ...calendar,
+        setCalendar((cal) => ({
+          ...cal,
           mode: 'year',
-        });
+        }));
 
         break;
       }
@@ -101,86 +100,96 @@ const CalendarWidget = ({
       default:
         break;
     }
-  };
+  }, [calendar.mode]);
 
   /**
    * 切換西元年
    * @param yearNum 上一年、下一年
    */
-  const handleChangeNavigationYear = (yearNum) => {
-    const date = new Date(`${calendar.year}-${calendar.month + 1}`);
+  const handleChangeNavigationYear = useCallback(
+    (yearNum) => {
+      const date = new Date(`${calendar.year}-${calendar.month + 1}`);
 
-    date.setFullYear(date.getFullYear() + yearNum);
-    setCalendar({
-      ...calendar,
-      year: date.getFullYear(),
-    });
-  };
+      date.setFullYear(date.getFullYear() + yearNum);
+      setCalendar((cal) => ({
+        ...cal,
+        year: date.getFullYear(),
+      }));
+    },
+    [calendar.year, calendar.month]
+  );
 
   /**
    * 切換月份
    * @param monthNum 上個月、下個月
    */
-  const handleChangeNavigationMonth = (monthNum) => {
-    const date = new Date(`${calendar.year}-${calendar.month + 1}`);
+  const handleChangeNavigationMonth = useCallback(
+    (monthNum) => {
+      const date = new Date(`${calendar.year}-${calendar.month + 1}`);
 
-    date.setMonth(date.getMonth() + monthNum);
-    setCalendar({
-      ...calendar,
-      month: date.getMonth(),
-      year: date.getFullYear(),
-    });
-  };
+      date.setMonth(date.getMonth() + monthNum);
+      setCalendar((cal) => ({
+        ...cal,
+        month: date.getMonth(),
+        year: date.getFullYear(),
+      }));
+    },
+    [calendar.year, calendar.month]
+  );
 
   /**
    * 設定月份
    * @param monthIndex 第幾個月
    */
-  const handleChangeCalendarMonth = (monthIndex) => {
-    setCalendar({
-      ...calendar,
+  const handleChangeCalendarMonth = useCallback((monthIndex) => {
+    setCalendar((cal) => ({
+      ...cal,
       month: monthIndex,
       mode: 'day',
-    });
-  };
+    }));
+  }, []);
 
   /**
    * 設定年份
    * @param year 經子層傳上來的年份
    */
-  const handleChangeCalendarYear = (year) => {
-    setCalendar({
-      ...calendar,
+  const handleChangeCalendarYear = useCallback((year) => {
+    setCalendar((cal) => ({
+      ...cal,
       year,
       mode: 'month',
-    });
-  };
+    }));
+  }, []);
 
-  const handleSelectDate = ({ date, isInMonth }) => {
-    if (!isInMonth) {
-      setCalendar({
-        ...calendar,
+  const handleChangeDate = useCallback(
+    ({ date, isInMonth }) => {
+      if (!isInMonth) {
+        setCalendar((cal) => ({
+          ...cal,
+          year: date.getFullYear(),
+          month: date.getMonth(),
+        }));
+      }
+
+      const userSelectedDate = {
         year: date.getFullYear(),
         month: date.getMonth(),
-      });
-    }
+        date: date.getDate(),
+      };
 
-    const userSelectedDate = {
-      year: date.getFullYear(),
-      month: date.getMonth(),
-      date: date.getDate(),
-    };
+      setSelectedDate(userSelectedDate);
+      onChange(userSelectedDate);
 
-    setSelectedDate(userSelectedDate);
-    onSelectDate(userSelectedDate);
-    if (!calendarOnly) {
-      handleToggleCalendar();
-    }
-  };
+      if (!calendarOnly) {
+        handleToggleCalendar();
+      }
+    },
+    [calendarOnly, handleToggleCalendar, onChange]
+  );
 
   return (
     <DatePickerInput
-      selectedDateFormat={userInputDate}
+      value={userInputDate}
       onClick={handleToggleCalendar}
       isShowCalendar={isShowCalendar}
       isShowInput={!calendarOnly}>
@@ -201,7 +210,7 @@ const CalendarWidget = ({
             today={today}
             calendar={calendar}
             selectedDate={selectedDate}
-            onSelectDate={handleSelectDate}
+            onChange={handleChangeDate}
             onChangeCalendarMonth={handleChangeCalendarMonth}
             onChangeCalendarYear={handleChangeCalendarYear}
           />

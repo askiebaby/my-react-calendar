@@ -1,28 +1,28 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import CalendarWidget from '../../components/CalendarWidget';
 
 import './DatePickerPage.scss';
 
 const DatePickerPage = () => {
-  const [selectedDate, setSelectedDate] = useState({});
-  const [userInputDate, setUserInputDate] = useState('2021-04-08');
+  const defaultDate = useMemo(() => ({ year: 2021, month: 3, date: 8 }), []);
+  const [selectedDate, setSelectedDate] = useState(defaultDate);
 
-  const handleSelectDate = useCallback((date) => {
-    setSelectedDate(date);
-  }, []);
-
-  useEffect(() => {
+  const userInputDate = useMemo(() => {
     const format = Object.keys(selectedDate).length
       ? `${selectedDate.year}-${selectedDate.month + 1}-${selectedDate.date}`
       : '';
-    setUserInputDate(format);
+    return format;
   }, [selectedDate]);
+
+  const handleChangeDate = useCallback((date) => {
+    setSelectedDate(date);
+  }, []);
 
   return (
     <section className='datepicker'>
       <CalendarWidget
         userInputDate={userInputDate}
-        onSelectDate={handleSelectDate}
+        onChange={handleChangeDate}
       />
     </section>
   );

@@ -2,8 +2,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import DatePickerInput from './DatePickerInput';
 
 describe('DatePickerInput', () => {
-  test('Render datepicker value from user user input', () => {
-    render(<DatePickerInput selectedDateFormat='2020-10-10' />);
+  test('Render datepicker value from user input', () => {
+    render(<DatePickerInput value='2020-10-10' />);
     const userInputDate = screen.getByDisplayValue(/2020-10-10/i);
     expect(userInputDate).toBeInTheDocument();
   });

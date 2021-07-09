@@ -3,7 +3,7 @@ import './DatePickerInput.scss';
 const DatePickerInput = ({
   children,
   onClick,
-  selectedDateFormat = '',
+  value = '',
   isShowCalendar = false,
   isShowInput = true,
 }) => {
@@ -15,7 +15,7 @@ const DatePickerInput = ({
           className='datepicker__input'
           placeholder='請選擇日期'
           readOnly
-          value={selectedDateFormat}
+          value={value}
           onClick={onClick}
         />
       ) : null}
